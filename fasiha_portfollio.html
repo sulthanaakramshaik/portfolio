@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaik Fasiha — Android Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #ffffff0f;
+    --accent: #4fffb0;
+    --accent2: #7c6aff;
+    --accent3: #ff6a6a;
+    --text: #e8e8f0;
+    --muted: #7a7a99;
+    --white: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, #0a0a0fdd 0%, transparent 100%);
+    backdrop-filter: blur(2px);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ---- HERO ---- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4fffb022 0%, transparent 70%);
+    top: -100px; right: -100px;
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #7c6aff18 0%, transparent 70%);
+    bottom: 0; left: 200px;
+    animation: pulse 8s ease-in-out infinite reverse;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 780px; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #4fffb015;
+    border: 1px solid #4fffb030;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(48px, 7vw, 82px);
+    line-height: 1.0;
+    letter-spacing: -2px;
+    color: var(--white);
+    animation: fadeUp 0.6s 0.1s ease both;
+    margin-bottom: 6px;
+  }
+  .hero h1 span { color: var(--accent); }
+
+  .hero-role {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #0a0a0f;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover { background: #6fffbf; transform: translateY(-2px); box-shadow: 0 8px 30px #4fffb040; }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 14px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  .hero-stats {
+    position: absolute;
+    right: 48px;
+    bottom: 80px;
+    display: flex;
+    gap: 40px;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- SECTIONS ---- */
+  section { padding: 100px 48px; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    line-height: 1.1;
+  }
+
+  /* ---- SKILLS ---- */
+  #skills { background: var(--surface); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .skill-card:hover { border-color: #ffffff20; transform: translateY(-4px); }
+  .skill-card:hover::before { transform: scaleX(1); }
+
+  .skill-icon { font-size: 28px; margin-bottom: 12px; }
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: #ffffff0a;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ---- PROJECTS ---- */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card:hover { transform: translateY(-6px); border-color: #ffffff20; box-shadow: 0 20px 60px #00000060; }
+
+  .project-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: #ffffff06;
+    position: absolute;
+    top: 16px; right: 24px;
+    line-height: 1;
+  }
+  .project-type {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .type-android { background: #4fffb015; color: var(--accent); border: 1px solid #4fffb030; }
+  .type-flutter { background: #7c6aff15; color: var(--accent2); border: 1px solid #7c6aff30; }
+  .type-research { background: #ff6a6a15; color: var(--accent3); border: 1px solid #ff6a6a30; }
+  .type-library { background: #ffd16a15; color: #ffd16a; border: 1px solid #ffd16a30; }
+
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+  .project-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+  .project-tech { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* ---- EXPERIENCE ---- */
+  #experience { background: var(--surface); }
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+  }
+  .timeline-item {
+    padding: 0 0 48px 40px;
+    position: relative;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: 6px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 16px var(--accent);
+  }
+  .timeline-date {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .timeline-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .timeline-company { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .timeline-bullets { list-style: none; }
+  .timeline-bullets li {
+    font-size: 14px;
+    color: var(--muted);
+    padding: 4px 0 4px 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .timeline-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 5px;
+  }
+
+  /* ---- CONTACT ---- */
+  #contact {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-glow {
+    position: absolute;
+    width: 500px; height: 300px;
+    background: radial-gradient(ellipse, #4fffb012 0%, transparent 70%);
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+  }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 30px #00000050; }
+
+  /* ---- FOOTER ---- */
+  footer {
+    text-align: center;
+    padding: 32px 48px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ---- SCROLLBAR ---- */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #ffffff20; border-radius: 2px; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 80px; }
+    .hero-stats { position: static; margin-top: 48px; justify-content: flex-start; }
+    section { padding: 72px 24px; }
+    footer { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SF.</div>
+  <div class="nav-links">
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Available for opportunities</div>
+    <h1>Shaik<br><span>Fasiha.</span></h1>
+    <div class="hero-role">Android Developer · Flutter · Java & Kotlin</div>
+    <p class="hero-desc">
+      Building production-grade mobile applications that real people use every day.
+      From government digitization platforms to enterprise AI tools — I write clean, scalable Android code.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn-primary">View My Work ↓</a>
+      <a href="mailto:sulthanaakramshaik@gmail.com" class="btn-outline">✉ Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">2+</div>
+      <div class="stat-label">Years Exp.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Apps Built</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Research Labs</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">What I work with</div>
+  <div class="section-title">Technical Skills</div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🤖</div>
+      <div class="skill-name">Android Development</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Building scalable, production-ready Android apps from scratch to deployment.</p>
+      <div class="skill-tags"><span class="tag">Java</span><span class="tag">Kotlin</span><span class="tag">Android SDK</span><span class="tag">Android Studio</span></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🦋</div>
+      <div class="skill-name">Flutter & Cross-Platform</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Mobile and web apps with Flutter, including BLoC state management architecture.</p>
+      <div class="skill-tags"><span class="tag">Flutter</span><span class="tag">Dart</span><span class="tag">BLoC</span><span class="tag">Flutter Web</span></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔗</div>
+      <div class="skill-name">APIs & Backend Integration</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Connecting mobile apps to backend services with real-time data handling.</p>
+      <div class="skill-tags"><span class="tag">REST APIs</span><span class="tag">JSON</span><span class="tag">SQLite</span><span class="tag">MySQL</span></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">📚</div>
+      <div class="skill-name">Libraries & SDK Design</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Building reusable libraries used across multiple Android and Flutter projects.</p>
+      <div class="skill-tags"><span class="tag">OCR Library</span><span class="tag">QR Parsing</span><span class="tag">Aadhaar SDK</span></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🧠</div>
+      <div class="skill-name">AI / ML</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Research-level experience with neural networks, NLP, and edge AI deployment.</p>
+      <div class="skill-tags"><span class="tag">Neural Networks</span><span class="tag">NLP</span><span class="tag">Azure AI</span><span class="tag">CNN/LSTM</span></div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⚙️</div>
+      <div class="skill-name">Dev Tools & Workflow</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Clean code, version control, and collaborative development practices.</p>
+      <div class="skill-tags"><span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">VS Code</span><span class="tag">Agile</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">Things I've built</div>
+  <div class="section-title">Projects</div>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-num">01</div>
+      <div class="project-type type-android">Android · Java & Kotlin</div>
+      <div class="project-title">Panchayat Seva</div>
+      <p class="project-desc">Two-app Android ecosystem digitizing local government operations across multiple panchayats. Property survey collection and tax/invoice management — used by real government staff in production.</p>
+      <div class="project-tech">
+        <span class="tag">Java</span><span class="tag">Kotlin</span><span class="tag">SQLite</span><span class="tag">REST APIs</span><span class="tag">Android SDK</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">02</div>
+      <div class="project-type type-library">Library · SDK</div>
+      <div class="project-title">OCR Library</div>
+      <p class="project-desc">Reusable text extraction SDK in two languages — Java for Aadhaar card information retrieval and Dart/Flutter for visiting card data parsing. Handles all Aadhaar QR formats with structured output.</p>
+      <div class="project-tech">
+        <span class="tag">Java</span><span class="tag">Dart</span><span class="tag">OCR</span><span class="tag">QR Parsing</span><span class="tag">Flutter</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">03</div>
+      <div class="project-type type-android">Android · MDM</div>
+      <div class="project-title">MDM Application</div>
+      <p class="project-desc">Mobile Device Management Android app enforcing organizational policies — remote device configuration, app restriction, and real-time device monitoring using Android Device Admin APIs.</p>
+      <div class="project-tech">
+        <span class="tag">Kotlin</span><span class="tag">Android SDK</span><span class="tag">Device Admin API</span><span class="tag">MDM</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">04</div>
+      <div class="project-type type-flutter">Flutter Web</div>
+      <div class="project-title">Elitical — Enterprise BI Platform</div>
+      <p class="project-desc">AI-powered cognitive business intelligence web platform with BLoC state management. Enables enterprise communication automation, ERP integrations, and marketing workflows — live in production.</p>
+      <div class="project-tech">
+        <span class="tag">Flutter Web</span><span class="tag">BLoC</span><span class="tag">REST APIs</span><span class="tag">ERP</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">05</div>
+      <div class="project-type type-research">Research · IEEE</div>
+      <div class="project-title">Age Estimation via Audio</div>
+      <p class="project-desc">CNN + LSTM neural network models predicting speaker age from voice features (MFCC, Chroma). Optimized for edge deployment on Jetson Nano. Published findings submitted to IEEE INDICON 2023.</p>
+      <div class="project-tech">
+        <span class="tag">CNN</span><span class="tag">LSTM</span><span class="tag">MFCC</span><span class="tag">Jetson Nano</span><span class="tag">PCA</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">06</div>
+      <div class="project-type type-android">Java · Parser</div>
+      <div class="project-title">EEV Document Parser</div>
+      <p class="project-desc">Java-based document data parsing system using Regular Expressions to extract and structure information from unstructured text documents at scale for enterprise use.</p>
+      <div class="project-tech">
+        <span class="tag">Java</span><span class="tag">Regex</span><span class="tag">OOP</span><span class="tag">Design Patterns</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">Where I've worked</div>
+  <div class="section-title">Experience</div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-date">2024 – Present</div>
+      <div class="timeline-title">Flutter Web Developer</div>
+      <div class="timeline-company">Elitical · Hyderabad, India</div>
+      <ul class="timeline-bullets">
+        <li>Built an AI-powered enterprise business intelligence platform using Flutter Web + BLoC</li>
+        <li>Architected scalable BLoC-driven state management patterns across the codebase</li>
+        <li>Integrated REST APIs for real-time enterprise dashboard data rendering</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">2023 – 2024</div>
+      <div class="timeline-title">Android Developer — Java & Kotlin</div>
+      <div class="timeline-company">Panchayat Seva · Government Digital Initiative</div>
+      <ul class="timeline-bullets">
+        <li>Led frontend development for government panchayat administration digitization</li>
+        <li>Built two production Android apps used by local government staff across panchayats</li>
+        <li>Owned the full development lifecycle from requirements to deployment</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Aug 2023 – 2024</div>
+      <div class="timeline-title">Java Developer Intern</div>
+      <div class="timeline-company">Sayukth Technologies Pvt. Ltd. · Hyderabad, India</div>
+      <ul class="timeline-bullets">
+        <li>Trained in advanced Java OOP, design patterns, and Regular Expressions</li>
+        <li>Developed the EEV document parser for structured extraction at scale</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">May 2023 – Jun 2023</div>
+      <div class="timeline-title">Summer Research Intern — Neural Networks</div>
+      <div class="timeline-company">NIT Warangal · Warangal, India</div>
+      <ul class="timeline-bullets">
+        <li>Designed CNN/LSTM models for audio-based age estimation with MFCC & Chroma features</li>
+        <li>Deployed on Jetson Nano & Arduino Nano BLE for embedded inference</li>
+        <li>Co-authored IEEE paper submitted to INDICON 2023</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item" style="padding-bottom:0">
+      <div class="timeline-date">Mar 2023 – Jun 2023</div>
+      <div class="timeline-title">NLP Research Intern</div>
+      <div class="timeline-company">IIIT Hyderabad · Remote</div>
+      <ul class="timeline-bullets">
+        <li>Built machine-annotated NLP datasets for translation tasks following quality benchmarks</li>
+        <li>Contributed to ongoing NLP research at one of India's top research institutions</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div style="position:relative;z-index:2">
+    <div class="section-label">Let's connect</div>
+    <div class="section-title">Get In Touch</div>
+    <p style="color:var(--muted);max-width:480px;margin:0 auto;font-size:15px;line-height:1.8">
+      I'm currently open to Android Developer roles. If you have an opportunity or just want to chat about mobile development, I'd love to hear from you.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:sulthanaakramshaik@gmail.com" class="contact-link">✉ sulthanaakramshaik@gmail.com</a>
+      <a href="tel:+919515533106" class="contact-link">📞 +91-9515533106</a>
+      <a href="https://linkedin.com/in/fasiha-shaik-8a432725b/" target="_blank" class="contact-link">🔗 LinkedIn</a>
+      <a href="https://github.com/" target="_blank" class="contact-link">🐙 GitHub</a>
+    </div>
+    <div style="margin-top:32px">
+      <a href="mailto:sulthanaakramshaik@gmail.com" class="btn-primary">Say Hello →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built with care · Shaik Fasiha · Android & Flutter Developer · Hyderabad, India</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.skill-card, .project-card, .timeline-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
